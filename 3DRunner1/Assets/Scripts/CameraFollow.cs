@@ -2,14 +2,14 @@
 
 public class CameraFollow : MonoBehaviour
 {
-    public Transform target;       // Посилання на гравця
-    public Vector3 offset;         // Зсув відносно гравця
-    public float smoothSpeed = 0.125f;  // Швидкість згладжування руху
+    public Transform target;    //player reference 
+    public Vector3 offset;          
+    public float smoothSpeed = 0.125f; 
 
+    //Method for camera to follow player
     void LateUpdate()
     {
         if (target == null) return;
-
         Vector3 desiredPosition = target.position + offset;
         Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
         transform.position = smoothedPosition;

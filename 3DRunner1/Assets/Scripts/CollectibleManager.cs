@@ -1,34 +1,46 @@
 ﻿using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;  // Для роботи з UI
+using UnityEngine.UI; 
 
 
 public class CollectibleManager : MonoBehaviour
 {
-    // Швидкість обертання монетки
-    public float rotationSpeed = 50f;
-
-    // Посилання на UI Text, який показує кількість монеток
-    // Вставити через інспектор або знайти за шляхом в Start()
-    public TextMeshPro coinText;
-    // Лічильник зібраних монеток (статична, щоб зберігати загальне значення)
+    float rotationSpeed = 220f;
+    public GameObject pickupEffect;
+    private Rigidbody rb;
+    AudioManager audioManager;
+    public TextMeshProUGUI coinText;
     public static int coinsCollected = 0;
-
-    void Update()
+    private void Awake()
     {
-        transform.Rotate(Vector3.up * rotationSpeed * Time.deltaTime);
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
     }
+    void Start()
+    {
+        coinsCollected = 0;
+    }
+    // Giving coin constant rotation
+    void FixedUpdate()
+    {
+        transform.Rotate(Vector3.up * rotationSpeed * Time.deltaTime, Space.World);
+    }
+    //Method for audio,effect and refresh coin count text when pick up it
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
+            if (pickupEffect != null)
+            {
+                GameObject effect = Instantiate(pickupEffect, transform.position, Quaternion.identity);
+                Destroy(effect, 1f); // delete effect after 1s
+            }
+            audioManager.PlaySFX(audioManager.Coincollected);
             coinsCollected++;
             UpdateCoinText();
-            Destroy(gameObject);
+            Destroy(gameObject);//delete coin from scene
         }
     }
-
     void UpdateCoinText()
     {
         if (coinText != null)
